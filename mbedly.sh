@@ -176,6 +176,9 @@ function maharatech_extractor {
 }
 
 
+
+
+
 function a7a {
 
 general_extracted=$(general_link_extract $URL)
