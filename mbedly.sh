@@ -189,8 +189,10 @@ if [ $(echo $URL | grep -c "maharatech") -eq 1 ] && [ $(echo $URL | grep -c "cou
         title=$(curl -s "$URL" |  grep breadcrumb_title | grep h4 | cut -d '"' -f 3 | cut -d "<" -f 1 | tr -d ">")
 
         echo -e "\n${Light_Green}[*] Detected Mahara-Tech Course: ${ENDCOLOR}$title\n"  
+        echo -n -e "\n${Light_Green}[!] Enter Your cookies: ${ENDCOLOR}"  
+        read maharaK
 
-    maharatech_extractor $URL "intelliboardPage=course;MoodleSession=4e337ec5e738254bb7c7f6e0abab542e;intelliboardTime=30;intelliboardParam=2144"
+    maharatech_extractor $URL "${maharaK}"
         YT_LINK="$YT_LINK
 $mahara_extracted"
 elif [[ $URL =~ (youtu|youtu.be|watch|embed|shorts) ]]; then
@@ -430,9 +432,13 @@ $general_extracted"
 if [ $(echo $URL | grep -c "maharatech") -eq 1 ] && [ $(echo $URL | grep -c "course") -eq 1 ]  ; then
         title=$(curl -s "$URL" |  grep breadcrumb_title | grep h4 | cut -d '"' -f 3 | cut -d "<" -f 1 | tr -d ">")
 
+
         echo -e "\n${Light_Green}[*] Detected Mahara-Tech Course: ${ENDCOLOR}$title\n"  
 
-    maharatech_extractor $URL "intelliboardPage=course;MoodleSession=4e337ec5e738254bb7c7f6e0abab542e;intelliboardTime=30;intelliboardParam=2144"
+        echo -n -e "\n${Light_Green}[!] Enter Your cookies: ${ENDCOLOR}"  
+        read maharaK
+
+    maharatech_extractor $URL "${maharaK}"
         YT_LINK="$YT_LINK
 $mahara_extracted"
 elif [[ $URL =~ (youtu|youtu.be|watch|embed|shorts) ]]; then
