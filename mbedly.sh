@@ -164,7 +164,7 @@ function maharatech_extractor {
 
 
         while read -r ss; do
-            echo -e "${Cyan}[*] dumping course content #${n}.. "
+            echo -e "${Light_Green}[*] dumping course content #${n}.. "
             yt_data_extractor $(yt_id_extractor $ss)
             echo -e "$Blue   Video Link:$ENDCOLOR $ss \n" 
 
@@ -185,13 +185,13 @@ $general_extracted"
 if [ $(echo $URL | grep -c "maharatech") -eq 1 ] && [ $(echo $URL | grep -c "course") -eq 1 ]  ; then
         title=$(curl -s "$URL" |  grep breadcrumb_title | grep h4 | cut -d '"' -f 3 | cut -d "<" -f 1 | tr -d ">")
 
-        echo -e "\n${Cyan}[*] Detected Mahara-Tech Course: ${ENDCOLOR}$title\n"  
+        echo -e "\n${Light_Green}[*] Detected Mahara-Tech Course: ${ENDCOLOR}$title\n"  
 
     maharatech_extractor $URL "intelliboardPage=course;MoodleSession=4e337ec5e738254bb7c7f6e0abab542e;intelliboardTime=30;intelliboardParam=2144"
         YT_LINK="$YT_LINK
 $mahara_extracted"
 elif [[ $URL =~ (youtu|youtu.be|watch|embed|shorts) ]]; then
-        echo -e "\n${Cyan}[*] Reading The YouTube Video Data..${ENDCOLOR}"  
+        echo -e "\n${Light_Green}[*] Reading The YouTube Video Data..${ENDCOLOR}"  
         yt_data_extractor $(yt_id_extractor $URL)
         echo -e "$Blue   Video Link:$ENDCOLOR $URL \n" 
         YT_LINK="$YT_LINK
@@ -201,7 +201,7 @@ else
 
     while read -r line; do
     if [ $(echo $line | grep -c "youtu") -eq 1 ]; then
-        echo -e "\n${Cyan}[*] Detected YouTube Video: ${ENDCOLOR}"  
+        echo -e "\n${Light_Green}[*] Detected YouTube Video: ${ENDCOLOR}"  
         yt_data_extractor $(yt_id_extractor $line)
         echo -e "$Blue   Video Link:$ENDCOLOR $line \n" 
         YT_LINK="$YT_LINK
@@ -236,15 +236,18 @@ IFS=$SAVEIFS
 
 if [[ ${#YT_LINK[@]} = 1 ]]; then
 
-echo -n "1. 144p
+echo -e "${Light_Green}[*] Your videos is ready to download, please select a quality.${ENDCOLOR}\n"
+
+echo -e "${green}1. 144p
 2. 360p
 3. 480p
 4. 720p
 5. 1080p
 6. 2k
 7. 4k
-8. mp3 (audio)
-format: "
+8. mp3 (audio) $ENDCOLOR\n"
+
+echo -e -n "${Light_Green}Select a Format: ${ENDCOLOR}"
 read FORMAT
 
 
@@ -281,15 +284,18 @@ fi
 echo -n -e "${Purple}Select Video Number or ALL: ${ENDCOLOR}"
 read b
 
-echo -n "1. 144p
+echo -e "${Light_Green}[*] Your videos is ready to download, please select a quality.${ENDCOLOR}\n"
+
+echo -e "${green}1. 144p
 2. 360p
 3. 480p
 4. 720p
 5. 1080p
 6. 2k
 7. 4k
-8. mp3 (audio)
-format: "
+8. mp3 (audio) $ENDCOLOR\n"
+
+echo -e -n "${Light_Green}Select a Format: ${ENDCOLOR}"
 read FORMAT
 
 if [[ "$b" == "ALL" ]]; then
@@ -337,8 +343,11 @@ case "$FORMAT" in
     yt_dl "144p" "${YT_LINK[$b]}"
     ;;
 2)
+
     yt_dl "360p" "${YT_LINK[$b]}"
+
     ;;
+
 3)
     yt_dl "480p" "${YT_LINK[$b]}"
     ;;
@@ -371,8 +380,8 @@ while test $# -gt 0; do
     -h|--help)
       echo "$0 [options] link"
       echo " "
-      echo "$0 [options] application [arguments]"
-      echo " "
+      echo "Mbedly is 'Video Downloader/Web Scraber' Supports Many Sites And Makes A Video From Literally Everything!!"
+      echo ""
       echo "options:"
       echo "-h, --help                show this help menu"
       echo "-l, --action=ACTION       link"
@@ -418,13 +427,13 @@ $general_extracted"
 if [ $(echo $URL | grep -c "maharatech") -eq 1 ] && [ $(echo $URL | grep -c "course") -eq 1 ]  ; then
         title=$(curl -s "$URL" |  grep breadcrumb_title | grep h4 | cut -d '"' -f 3 | cut -d "<" -f 1 | tr -d ">")
 
-        echo -e "\n${Cyan}[*] Detected Mahara-Tech Course: ${ENDCOLOR}$title\n"  
+        echo -e "\n${Light_Green}[*] Detected Mahara-Tech Course: ${ENDCOLOR}$title\n"  
 
     maharatech_extractor $URL "intelliboardPage=course;MoodleSession=4e337ec5e738254bb7c7f6e0abab542e;intelliboardTime=30;intelliboardParam=2144"
         YT_LINK="$YT_LINK
 $mahara_extracted"
 elif [[ $URL =~ (youtu|youtu.be|watch|embed|shorts) ]]; then
-        echo -e "\n${Cyan}[*] Reading The YouTube Video Data..${ENDCOLOR}"  
+        echo -e "\n${Light_Green}[*] Reading The YouTube Video Data..${ENDCOLOR}"  
         yt_data_extractor $(yt_id_extractor $URL)
         echo -e "$Blue   Video Link:$ENDCOLOR $URL \n" 
         YT_LINK="$YT_LINK
@@ -434,7 +443,7 @@ else
 
     while read -r line; do
     if [ $(echo $line | grep -c "youtu") -eq 1 ]; then
-        echo -e "\n${Cyan}[*] Detected YouTube Video: ${ENDCOLOR}"  
+        echo -e "\n${Light_Green}[*] Detected YouTube Video: ${ENDCOLOR}"  
         yt_data_extractor $(yt_id_extractor $line)
         echo -e "$Blue   Video Link:$ENDCOLOR $line \n" 
         YT_LINK="$YT_LINK
@@ -469,15 +478,18 @@ IFS=$SAVEIFS
 
 if [[ ${#YT_LINK[@]} = 1 ]]; then
 
-echo -n "1. 144p
+echo -e "${Light_Green}[*] Your videos is ready to download, please select a quality.${ENDCOLOR}\n"
+
+echo -e "${green}1. 144p
 2. 360p
 3. 480p
 4. 720p
 5. 1080p
 6. 2k
 7. 4k
-8. mp3 (audio)
-format: "
+8. mp3 (audio) $ENDCOLOR\n"
+
+echo -e -n "${Light_Green}Select a Format: ${ENDCOLOR}"
 read FORMAT
 
 
@@ -514,15 +526,18 @@ fi
 echo -n -e "${Purple}Select Video Number or ALL: ${ENDCOLOR}"
 read b
 
-echo -n "1. 144p
+echo -e "${Light_Green}[*] Your videos is ready to download, please select a quality.${ENDCOLOR}\n"
+
+echo -e "${green}1. 144p
 2. 360p
 3. 480p
 4. 720p
 5. 1080p
 6. 2k
 7. 4k
-8. mp3 (audio)
-format: "
+8. mp3 (audio) $ENDCOLOR\n"
+
+echo -e -n "${Light_Green}Select a Format: ${ENDCOLOR}"
 read FORMAT
 
 if [[ "$b" == "ALL" ]]; then
@@ -570,8 +585,11 @@ case "$FORMAT" in
     yt_dl "144p" "${YT_LINK[$b]}"
     ;;
 2)
+
     yt_dl "360p" "${YT_LINK[$b]}"
+
     ;;
+
 3)
     yt_dl "480p" "${YT_LINK[$b]}"
     ;;
