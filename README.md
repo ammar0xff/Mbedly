@@ -182,4 +182,5 @@ Project Link: [https://github.com/ammar0xff/Mbedly](https://github.com/ammar0xff
 ## Acknowledgments
 
 * [yt-dlp](https://github.com/yt-dlp/yt-dlp)
+* [m3u8-download](https://github.com/williamchanrico/m3u8-download)
 
