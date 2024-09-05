@@ -52,42 +52,42 @@ function yt_dl {
 
         "144p")
             echo -e "${Green}downloaing $2 as format $1"
-            $SCRIPT_DIR/extractors/yt-dlp $2 -f bestvideo[height=144][ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]/bestvideo[height=144]+bestaudio --newline --quiet --progress --ignore-config --no-playlist --no-warnings  -o "%(title).200s" 
+            $SCRIPT_DIR/loaders/yt-dlp $2 -f bestvideo[height=144][ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]/bestvideo[height=144]+bestaudio --newline --quiet --progress --ignore-config --no-playlist --no-warnings  -o "%(title).200s" 
             ;;
 
         "360p")
             echo -e "${Green}downloaing $2 as format $1"
-            $SCRIPT_DIR/extractors/yt-dlp $2 -f bestvideo[height=360][ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]/bestvideo[height=360]+bestaudio --newline --quiet --progress --ignore-config --no-playlist --no-warnings  -o "%(title).200s" 
+            $SCRIPT_DIR/loaders/yt-dlp $2 -f bestvideo[height=360][ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]/bestvideo[height=360]+bestaudio --newline --quiet --progress --ignore-config --no-playlist --no-warnings  -o "%(title).200s" 
             ;;
 
         "480p")
             echo -e "${Green}downloaing $2 as format $1"
-            $SCRIPT_DIR/extractors/yt-dlp $2 -f bestvideo[height=480][ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]/bestvideo[height=480]+bestaudio --newline --quiet --progress --ignore-config --no-playlist --no-warnings  -o "%(title).200s" 
+            $SCRIPT_DIR/loaders/yt-dlp $2 -f bestvideo[height=480][ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]/bestvideo[height=480]+bestaudio --newline --quiet --progress --ignore-config --no-playlist --no-warnings  -o "%(title).200s" 
             ;;
 
         "720p")
             echo -e "${Green}downloaing $2 as format $1"
-            $SCRIPT_DIR/extractors/yt-dlp $2 -f bestvideo[height=720][ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]/bestvideo[height=720]+bestaudio --newline --quiet --progress --ignore-config --no-playlist --no-warnings  -o "%(title).200s"
+            $SCRIPT_DIR/loaders/yt-dlp $2 -f bestvideo[height=720][ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]/bestvideo[height=720]+bestaudio --newline --quiet --progress --ignore-config --no-playlist --no-warnings  -o "%(title).200s"
             ;;
 
         "1080p")
             echo -e "${Green}downloaing $2 as format $1"
-            $SCRIPT_DIR/extractors/yt-dlp $2 -f bestvideo[height=1080][ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]/bestvideo[height=1080]+bestaudio --newline --quiet --progress --ignore-config --no-playlist --no-warnings  -o "%(title).200s" 
+            $SCRIPT_DIR/loaders/yt-dlp $2 -f bestvideo[height=1080][ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]/bestvideo[height=1080]+bestaudio --newline --quiet --progress --ignore-config --no-playlist --no-warnings  -o "%(title).200s" 
             ;;
 
         "2k")
             echo -e "${Green}downloaing $2 as format $1"
-            $SCRIPT_DIR/extractors/yt-dlp $2 -f bestvideo[height=1440][ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]/bestvideo[height=1440]+bestaudio --newline --quiet --progress --ignore-config --no-playlist --no-warnings  -o "%(title).200s" 
+            $SCRIPT_DIR/loaders/yt-dlp $2 -f bestvideo[height=1440][ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]/bestvideo[height=1440]+bestaudio --newline --quiet --progress --ignore-config --no-playlist --no-warnings  -o "%(title).200s" 
             ;;
 
         "4k")
             echo -e "${Green}downloaing $2 as format $1"
-            $SCRIPT_DIR/extractors/yt-dlp $2 -f bestvideo[height=2160][ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]/bestvideo[height=2160]+bestaudio --newline --quiet --progress --ignore-config --no-playlist --no-warnings  -o "%(title).200s" 
+            $SCRIPT_DIR/loaders/yt-dlp $2 -f bestvideo[height=2160][ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]/bestvideo[height=2160]+bestaudio --newline --quiet --progress --ignore-config --no-playlist --no-warnings  -o "%(title).200s" 
             ;;
 
         "mp3")
             echo -e "${Green}downloaing $2 as format $1"
-            $SCRIPT_DIR/extractors/yt-dlp $2 -f bestaudio -x --embed-thumbnail --audio-format mp3 --newline --quiet --progress --ignore-config --no-playlist --no-warnings  -o "%(title).200s"
+            $SCRIPT_DIR/loaders/yt-dlp $2 -f bestaudio -x --embed-thumbnail --audio-format mp3 --newline --quiet --progress --ignore-config --no-playlist --no-warnings  -o "%(title).200s"
             ;;
     esac
 }
