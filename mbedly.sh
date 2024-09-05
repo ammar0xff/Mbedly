@@ -189,7 +189,7 @@ if [ $(echo $URL | grep -c "maharatech") -eq 1 ] && [ $(echo $URL | grep -c "cou
         title=$(curl -s "$URL" |  grep breadcrumb_title | grep h4 | cut -d '"' -f 3 | cut -d "<" -f 1 | tr -d ">")
 
         echo -e "\n${Light_Green}[*] Detected Mahara-Tech Course: ${ENDCOLOR}$title\n"  
-        echo -n -e "\n${Light_Green}[!] Enter Your cookies: ${ENDCOLOR}"  
+        echo -n -e "\n${Light_Green}[!] Enter Your cookies in header string format (cookie editor export): ${ENDCOLOR}"  
         read maharaK
 
     maharatech_extractor $URL "${maharaK}"
@@ -435,7 +435,7 @@ if [ $(echo $URL | grep -c "maharatech") -eq 1 ] && [ $(echo $URL | grep -c "cou
 
         echo -e "\n${Light_Green}[*] Detected Mahara-Tech Course: ${ENDCOLOR}$title\n"  
 
-        echo -n -e "\n${Light_Green}[!] Enter Your cookies: ${ENDCOLOR}"  
+        echo -n -e "\n${Light_Green}[!] Enter Your cookies in header string format (cookie editor export): ${ENDCOLOR}"  
         read maharaK
 
     maharatech_extractor $URL "${maharaK}"
