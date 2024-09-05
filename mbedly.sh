@@ -252,7 +252,7 @@ echo -e "${green}1. 144p
 7. 4k
 8. mp3 (audio) $ENDCOLOR\n"
 
-echo -e -n "${Light_Green}Select a Format: ${ENDCOLOR}"
+echo -e -n "${Light_Green}Select a Format (1-8): ${ENDCOLOR}"
 read FORMAT
 
 
@@ -300,7 +300,7 @@ echo -e "${green}1. 144p
 7. 4k
 8. mp3 (audio) $ENDCOLOR\n"
 
-echo -e -n "${Light_Green}Select a Format: ${ENDCOLOR}"
+echo -e -n "${Light_Green}Select a Format (1-8): ${ENDCOLOR}"
 read FORMAT
 
 if [[ "$b" == "ALL" ]]; then
@@ -433,7 +433,7 @@ if [ $(echo $URL | grep -c "maharatech") -eq 1 ] && [ $(echo $URL | grep -c "cou
         title=$(curl -s "$URL" |  grep breadcrumb_title | grep h4 | cut -d '"' -f 3 | cut -d "<" -f 1 | tr -d ">")
 
 
-        echo -e "\n${Light_Green}[*] Detected Mahara-Tech Course: ${ENDCOLOR}$title\n"  
+        echo -e "\n${Light_Green}[*] Detected Mahara-Tech Course: ${ENDCOLOR}$title"  
 
         echo -n -e "\n${Light_Green}[!] Enter Your cookies in header string format (cookie editor export): ${ENDCOLOR}"  
         read maharaK
@@ -498,7 +498,7 @@ echo -e "${green}1. 144p
 7. 4k
 8. mp3 (audio) $ENDCOLOR\n"
 
-echo -e -n "${Light_Green}Select a Format: ${ENDCOLOR}"
+echo -e -n "${Light_Green}Select a Format (1-8): ${ENDCOLOR}"
 read FORMAT
 
 
@@ -546,7 +546,7 @@ echo -e "${green}1. 144p
 7. 4k
 8. mp3 (audio) $ENDCOLOR\n"
 
-echo -e -n "${Light_Green}Select a Format: ${ENDCOLOR}"
+echo -e -n "${Light_Green}Select a Format (1-8): ${ENDCOLOR}"
 read FORMAT
 
 if [[ "$b" == "ALL" ]]; then
