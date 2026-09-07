@@ -20,13 +20,13 @@ quality (144p → 4K, or mp3), and download them all with a live progress bar. F
 - 📚 **Mahara-Tech courses** — dump every lecture of a course (cookie header support).
 - 🎚️ **Quality selection** — 144p, 360p, 480p, 720p, 1080p, 2K, 4K, and mp3 audio.
 - ⬇️ **Batch mode** — grab one video, several, or *ALL* at once.
-- 🖥️ **Rich TUI** — live progress bars, spinners, tables. No mouse required.
+- 🖥️ **Textual dashboard** — a btop/opencode-style full-screen TUI. No mouse required.
 - 📜 **Download history** kept in `~/.mbedly/history.json`.
 - 🧩 **Clean engine layer** (`mbedly.engine`) — pure Python, ready to be reused by the upcoming Flutter app.
 
 ## Installation
 
-> Requires **Python 3.9+** and **ffmpeg**. yt-dlp is installed automatically.
+> Requires **Python 3.9+**, **ffmpeg**, and the `textual` dependency (installed automatically).
 
 ```sh
 git clone https://github.com/ammar0xff/Mbedly.git && cd Mbedly
@@ -46,11 +46,16 @@ mbedly --help
 
 ## Usage
 
-**Interactive (paste any URL):**
+**Dashboard (like btop / opencode):**
 
 ```sh
-mbedly
+mbedly                 # opens the full-screen dashboard on a terminal
+mbedly --tui "URL"     # open the dashboard with a URL already loaded
 ```
+
+> Dashboard keys: `Enter` on the URL box analyses a page. `↑/↓` select a result.
+> Click a quality (144p → mp3), then **download selected** or **download all** with live
+> progress bars. `Ctrl+Q` quits, `/` focuses the URL box, `r` shows history.
 
 **Direct command:**
 
@@ -69,7 +74,7 @@ mbedly -h                                                    # help
 - [x] YouTube (watch / embed / shorts / live) with metadata
 - [x] Mahara-Tech course extraction (cookie support)
 - [x] Facebook, LiviVideo, native `.mp4`, HLS `.m3u8`
-- [x] Cross-platform TUI with progress bars & download history
+- [x] Cross-platform full-screen dashboard (Textual) with progress bars & download history
 - [ ] Flutter desktop / mobile app (planned — reuses `mbedly.engine`)
 - [ ] Udemy, Coursera, Alison password-gated course extraction
 - [ ] Playlist & serialized episode downloads
@@ -95,4 +100,5 @@ Project Link: https://github.com/ammar0xff/Mbedly
 ## Acknowledgments
 
 - [yt-dlp](https://github.com/yt-dlp/yt-dlp) — the download engine
-- [rich](https://github.com/Textualize/rich) — the terminal UI
+- [Rich](https://github.com/Textualize/rich) — the terminal UI
+- [Textual](https://github.com/Textualize/textual) — the full-screen dashboard

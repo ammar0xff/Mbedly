@@ -71,6 +71,11 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="cookie header string (Cookie Editor export) for Mahara-Tech courses",
     )
+    parser.add_argument(
+        "--tui",
+        action="store_true",
+        help="open the full-screen dashboard (default when run without arguments)",
+    )
     return parser
 
 
@@ -215,34 +220,31 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
+    uses_dashboard = args.tui or (not args.url and sys.stdin.isatty())
+    if uses_dashboard:
+        from mbedly import app as dashboard
+
+        dashboard.launch(output=args.output, start_url=args.url if args.url else None)
+        return 0
+
+    if not args.url:
+        parser.print_help()
+        return 1
+
     console = Console()
     console.print(Panel(BANNER, border_style="yellow", expand=False))
     console.print(
         "[dim]full-featured video downloader & web scraper - cross-platform TUI[/]\n"
     )
-
-    if args.url:
-        return run(
-            console,
-            args.url,
-            quality=args.quality,
-            video=args.video,
-            output=args.output,
-            cookies=args.cookies,
-            non_interactive=True,
-        )
-
-    if not sys.stdin.isatty():
-        parser.print_help()
-        return 1
-
-    # Interactive REPL: keep processing URLs until the user quits.
-    while True:
-        url = Prompt.ask("[yellow]Enter a URL containing an embedded video[/]")
-        if not url or url.lower() in ("q", "quit", "exit"):
-            break
-        run(console, url, quality=args.quality, video=args.video, output=args.output)
-    return 0
+    return run(
+        console,
+        args.url,
+        quality=args.quality,
+        video=args.video,
+        output=args.output,
+        cookies=args.cookies,
+        non_interactive=True,
+    )
 
 
 if __name__ == "__main__":
