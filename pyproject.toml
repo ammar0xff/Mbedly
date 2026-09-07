@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mbedly"
+version = "2.0.0"
+description = "Full-featured video downloader & web scraper: makes a video from literally everything"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+authors = [{ name = "Ammar Mohamed", email = "ammar0xf@gmail.com" }]
+keywords = ["video", "downloader", "scraper", "youtube", "yt-dlp", "tui"]
+classifiers = [
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Utilities",
+]
+dependencies = ["yt-dlp>=2024.4.9", "rich>=13.0.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0.0"]
+
+[project.scripts]
+mbedly = "mbedly.tui:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

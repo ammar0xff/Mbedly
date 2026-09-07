@@ -1,186 +1,98 @@
 # Mbedly
 
-<a id="readme-top"></a>
-
-<!-- PROJECT SHIELDS -->
-
-<p>
-  <img src="https://img.shields.io/github/contributors/ammar0xff/Mbedly.svg?style=for-the-badge&color=orange" />
-  <img src="https://img.shields.io/github/forks/ammar0xff/Mbedly.svg?style=for-the-badge&color=orange" />
+<p align="center">
   <img src="https://img.shields.io/github/stars/ammar0xff/Mbedly?style=for-the-badge&color=orange" />
-  <img src="https://img.shields.io/github/issues/ammar0xff/Mbedly.svg?style=for-the-badge&color=orange" />
-  <img src="https://img.shields.io/github/license/ammar0xff/Mbedly?style=for-the-badge&color=orange">
-  <img
-    src="https://img.shields.io/badge/-LinkedIn-blue?style=for-the-badge&amp;logo=Linkedin&amp;logoColor=white&color=gray" />
+  <img src="https://img.shields.io/github/license/ammar0xff/Mbedly?style=for-the-badge&color=orange" />
+  <img src="https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20linux-00FF41?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/language-python-blue?style=for-the-badge" />
 </p>
 
+**A full-featured video downloader & web scraper — makes a video from literally everything.**
 
-<!-- PROJECT LOGO -->
+Give Mbedly a page URL and it will hunt down every embedded video on it, let you pick a
+quality (144p → 4K, or mp3), and download them all with a live progress bar. Fully
+**cross-platform**: Windows, macOS, Linux, and Android (Termux).
 
-<br />
-<div align="center">
-  <a href="https://github.com/ammar0xff/Mbedly"><img src="images/banner.png" alt="Banner"></a>
-  <h3 align="center">Mbedly</h3>
-  <p align="center">
-    A Full-Featured Video Downloader Supports Many Sites And Makes A Video From Literally Everything!!
-    <br />
-    <a href="https://github.com/ammar0xff/Mbedly/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
-    ·
-    <a href="https://github.com/ammar0xff/Mbedly/issues/new?labels=enhancement&template=feature-request---.md">Request
-      Feature</a>
-  </p>
-</div>
+## Features
 
-
-<!-- TABLE OF CONTENTS -->
-
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#installation">Installation</a></li>
-    <!-- <li><a href="#usage">Usage</a></li> -->
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
-
-
-
-<!-- ABOUT THE PROJECT -->
-## About The Project
-<a href="https://github.com/ammar0xff/Mbedly"><img src="images/project_screenshot.png" alt="Banner"></a>
-
-Ever dreamed of a magical video downloader that could snatch up every single Udemy lecture like a squirrel hoarding acorns? Well, Mbedly is your fairy godmother! It's like a video-grabbing ninja, sneaking into all sorts of online classrooms and bringing back the loot (aka your favorite courses).
-
-So, whether you're after a single video or an entire course series, Mbedly's got your back (as long as the site's on our magical <a href="#roadmap">Roadmap</a>, of course).
-
-
-
-
-
-
-
-
-### Built With
-
-<p>
-	<img src="https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white"/>
-  	<img src="https://img.shields.io/badge/GNU%20Bash-4EAA25?style=for-the-badge&logo=GNU%20Bash&logoColor=white"/>
-
-
-</p>
-
-
-<!-- GETTING STARTED -->
+- 🔍 **Scrapes any page** and extracts every embedded video URL (YouTube, Facebook, LiviVideo, native `.mp4`, HLS `.m3u8`).
+- ▶️ **YouTube** — watch / youtu.be / embed / shorts / live URLs, with title & channel from oEmbed.
+- 📚 **Mahara-Tech courses** — dump every lecture of a course (cookie header support).
+- 🎚️ **Quality selection** — 144p, 360p, 480p, 720p, 1080p, 2K, 4K, and mp3 audio.
+- ⬇️ **Batch mode** — grab one video, several, or *ALL* at once.
+- 🖥️ **Rich TUI** — live progress bars, spinners, tables. No mouse required.
+- 📜 **Download history** kept in `~/.mbedly/history.json`.
+- 🧩 **Clean engine layer** (`mbedly.engine`) — pure Python, ready to be reused by the upcoming Flutter app.
 
 ## Installation
 
-1. Clone the repo
+> Requires **Python 3.9+** and **ffmpeg**. yt-dlp is installed automatically.
+
 ```sh
-git clone https://github.com/ammar0xff/Mbedly.git ; cd Mbedly
-```
-2. Install all necessary packages and libraries
-```sh
-sudo ./install.sh 
+git clone https://github.com/ammar0xff/Mbedly.git && cd Mbedly
+./install.sh          # Debian/Ubuntu, macOS, Termux, Git Bash / WSL
 ```
 
+or manually:
 
+```sh
+python -m pip install .
+mbedly --help
+```
 
+- **Windows (native):** `py -m pip install .` (ffmpeg via `winget install ffmpeg`)
+- **macOS:** `brew install ffmpeg && pip3 install .`
+- **Termux:** `pkg install -y ffmpeg && pip install .`
 
-<!-- USAGE EXAMPLES -->
-<!-- ## Usage
+## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos
-work well in this space. You may also link to more resources.
+**Interactive (paste any URL):**
 
-_For more examples, please refer to the [Documentation](https://example.com)_ -->
+```sh
+mbedly
+```
 
+**Direct command:**
 
+```sh
+mbedly "https://www.youtube.com/watch?v=dQw4w9WgXcQ"          # 1080p default
+mbedly "URL" -q 720p                                          # pick quality
+mbedly "URL" -q mp3                                           # audio only
+mbedly "URL" -q 1080p -n ALL -o ~/Videos                      # every video found
+mbedly "https://maharatech.gov.eg/course/view.php?id=X" -c "cookie editor header"
+mbedly -h                                                    # help
+```
 
-
-<!-- ROADMAP -->
 ## Roadmap
 
-- [x] Extract any embedded video links from any site & download it.
-- [x] Download a youtube video like any regular downloader.
-- [x] Auto-Extract supported sites:
-  - [x] Mahara-Tech
-  - [ ] EgyBest
-  - [ ] Alison
-  - [ ] Coursera
-  - [ ] StarDima
-  - [ ] Udemy
-- [x] Supported Videos:
-  - [x] YouTube
-  - [ ] Facebook
-  - [ ] Instagram
-  - [ ] Twitter
-  - [ ] TikTok
-  - [ ] ViiiVideo
-  - [ ] Mega
+- [x] Scrape any page for embedded video links & download them
+- [x] YouTube (watch / embed / shorts / live) with metadata
+- [x] Mahara-Tech course extraction (cookie support)
+- [x] Facebook, LiviVideo, native `.mp4`, HLS `.m3u8`
+- [x] Cross-platform TUI with progress bars & download history
+- [ ] Flutter desktop / mobile app (planned — reuses `mbedly.engine`)
+- [ ] Udemy, Coursera, Alison password-gated course extraction
+- [ ] Playlist & serialized episode downloads
+- [ ] Queue management + parallel downloads
 
-See the [open issues](https://github.com/ammar0xff/Mbedly/issues) for a full list of proposed features (and known
-issues).
+## Development
 
+```sh
+pip install -e ".[dev]"
+pytest
+```
 
-
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any
-contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also
-simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-
-### Top contributors:
-
-<a href="https://github.com/ammar0xff/Mbedly/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=ammar0xff/Mbedly" alt="contrib.rocks image" />
-</a>
-
-
-
-<!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+Distributed under the MIT License.
 
-
-
-
-<!-- CONTACT -->
 ## Contact
 
-Ammar Mohamed - ammar0xf@gmail.com
+Ammar Mohamed — ammar0xf@gmail.com
 
-Project Link: [https://github.com/ammar0xff/Mbedly](https://github.com/ammar0xff/Mbedly)
+Project Link: https://github.com/ammar0xff/Mbedly
 
-
-
-
-<!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* [yt-dlp](https://github.com/yt-dlp/yt-dlp)
-* [m3u8-download](https://github.com/williamchanrico/m3u8-download)
-
+- [yt-dlp](https://github.com/yt-dlp/yt-dlp) — the download engine
+- [rich](https://github.com/Textualize/rich) — the terminal UI
