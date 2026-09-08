@@ -272,7 +272,7 @@ jobs:
     env:
       VERSION: ${{ needs.resolve.outputs.tag }}
       GH_TOKEN: ${{ github.token }}
-steps:
+    steps:
       - uses: actions/checkout@v5
       - uses: actions/download-artifact@v5
         with:
