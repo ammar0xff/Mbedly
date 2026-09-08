@@ -53,9 +53,11 @@ mbedly                 # opens the full-screen dashboard on a terminal
 mbedly --tui "URL"     # open the dashboard with a URL already loaded
 ```
 
-> Dashboard keys: `Enter` on the URL box analyses a page. `↑/↓` select a result.
-> Click a quality (144p → mp3), then **download selected** or **download all** with live
-> progress bars. `Ctrl+Q` quits, `/` focuses the URL box, `r` shows history.
+> Dashboard keys: `Enter` on the URL box analyses a page and shows every video with its
+> **real title** (labels resolved automatically). `↑/↓` select a result, `d` downloads it,
+> `a` downloads all. Pick a quality (144p → mp3), watch live progress/speed, then hit
+> download. `?` shows all shortcuts, `r` shows download history, `q` / `Ctrl+Q` quits,
+> `/` focuses the URL box.
 
 **Direct command:**
 

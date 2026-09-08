@@ -218,21 +218,33 @@ def scrape(url: str, cookie: Optional[str] = None) -> list[MediaItem]:
     return items
 
 
-def resolve_title(item: MediaItem) -> str:
-    """Best-effort human readable title for any media item."""
+def resolve_meta(item: MediaItem) -> tuple[str, str]:
+    """Best-effort (title, channel) for any media item.
+
+    YouTube uses the cheap oEmbed lookup first, then falls back to a full
+    yt-dlp metadata probe (also covers direct .mp4 files, HLS streams, ...).
+    """
     if item.title:
-        return item.title
+        return item.title, item.channel
     if item.kind == "youtube":
         vid = youtube_id(item.url)
         if vid:
             title, channel = youtube_meta(vid)
-            return title
+            if title:
+                return title, channel
     try:
         with yt_dlp.YoutubeDL({"quiet": True, "no_warnings": True}) as ydl:
             info = ydl.extract_info(item.url, download=False)
-            return str(info.get("title") or item.url)
+            title = str(info.get("title") or "") or item.url
+            channel = str(info.get("channel") or info.get("uploader") or "")
+            return title, channel or item.channel
     except Exception:
-        return item.url
+        return item.title or item.url, item.channel
+
+
+def resolve_title(item: MediaItem) -> str:
+    """Best-effort human readable title for any media item."""
+    return resolve_meta(item)[0]
 
 
 # --------------------------------------------------------------------------
