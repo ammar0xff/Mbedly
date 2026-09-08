@@ -75,10 +75,12 @@ jobs:
           yes | flutter doctor --android-licenses > /dev/null || true
       - name: Build APK
         run: flutter build apk --release --build-name "$VERSION" --build-number "$GITHUB_RUN_NUMBER"
+      - name: Rename APK
+        run: mv build/app/outputs/flutter-apk/app-release.apk "$GITHUB_WORKSPACE/mbedly-app-android.apk"
       - uses: actions/upload-artifact@v5
         with:
           name: release-mbedly-app-android
-          path: flutter/mbedly_app/build/app/outputs/flutter-apk/app-release.apk
+          path: mbedly-app-android.apk
 
   flutter-web:
     needs: resolve
