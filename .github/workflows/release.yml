@@ -145,11 +145,11 @@ jobs:
           mkdir -p "$APPDIR/usr/share/applications" "$APPDIR/usr/share/icons/hicolor/256x256/apps"
           cp "$GITHUB_WORKSPACE/packaging/linux/mbedly_app.desktop" "$APPDIR/usr/share/applications/"
           cp icon.png "$APPDIR/usr/share/icons/hicolor/256x256/apps/mbedly_app.png"
-          export APPIMAGE_EXTRACT_AND_RUN=1
-          wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-          wget -q https://github.com/linuxdeploy/linuxdeploy-plugin-gtk/releases/download/continuous/linuxdeploy-plugin-gtk-x86_64.AppImage
-          chmod +x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-gtk-x86_64.AppImage
-          ./linuxdeploy-x86_64.AppImage --appdir "$APPDIR" --plugin gtk --output appimage
+          curl -fsSL --retry 3 --retry-all-errors -o appimagetool.AppImage \
+            https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x appimagetool.AppImage
+          export ARCH=x86_64 APPIMAGE_EXTRACT_AND_RUN=1
+          ./appimagetool.AppImage "$APPDIR"
           mv -f Mbedly-*.AppImage "$GITHUB_WORKSPACE/mbedly-app-linux.AppImage"
       - uses: actions/upload-artifact@v5
         with:
