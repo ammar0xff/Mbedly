@@ -1,0 +1,45 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  python:
+    name: Python engine + API
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install package
+        run: |
+          pip install -e .
+          pip install pytest
+      - name: Run tests
+        run: python -m pytest -q
+
+  flutter:
+    name: Flutter app (test + build web)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: flutter/mbedly_app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: pub get
+        run: flutter pub get
+      - name: Analyze
+        run: flutter analyze
+      - name: Tests
+        run: flutter test
+      - name: Build web
+        run: flutter build web

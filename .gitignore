@@ -1,9 +1,8 @@
-.version
 __pycache__/
 *.py[cod]
-*.egg-info/
 build/
 dist/
-.venv/
-venv/
-downloads/
+*.egg-info/
+.pytest_cache/
+flutter/mbedly_app/build/
+flutter/mbedly_app/.dart_tool/

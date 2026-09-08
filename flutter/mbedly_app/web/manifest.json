@@ -1,0 +1,12 @@
+{
+  "name": "mbedly",
+  "short_name": "mbedly",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0b0d10",
+  "theme_color": "#0b0d10",
+  "description": "Mbedly - video downloader",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false,
+  "icons": []
+}

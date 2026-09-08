@@ -1,0 +1,4 @@
+# This file exists to keep the default Flutter analysis behavior. Real lint rules
+# live in analysis_options.yaml at the repo root via include, but for standalone
+# builds we rely on flutter_lints from the dev_dependency.
+include: package:flutter_lints/flutter.yaml

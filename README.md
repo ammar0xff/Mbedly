@@ -21,8 +21,9 @@ quality (144p → 4K, or mp3), and download them all with a live progress bar. F
 - 🎚️ **Quality selection** — 144p, 360p, 480p, 720p, 1080p, 2K, 4K, and mp3 audio.
 - ⬇️ **Batch mode** — grab one video, several, or *ALL* at once.
 - 🖥️ **Textual dashboard** — a btop/opencode-style full-screen TUI. No mouse required.
+- 📱 **Flutter app** — a cross-platform UI (`flutter/mbedly_app`) backed by the local `mbedly-api`; live progress, history, playlists.
 - 📜 **Download history** kept in `~/.mbedly/history.json`.
-- 🧩 **Clean engine layer** (`mbedly.engine`) — pure Python, ready to be reused by the upcoming Flutter app.
+- 🧩 **Clean engine layer** (`mbedly.engine`) — pure Python, reused by the dashboard, the JSON API, and the Flutter app.
 
 ## Installation
 
@@ -70,17 +71,36 @@ mbedly "https://maharatech.gov.eg/course/view.php?id=X" -c "cookie editor header
 mbedly -h                                                    # help
 ```
 
+**JSON API** (the Flutter app's backend — stdlib only, runs anywhere Python does):
+
+```sh
+mbedly-api                 # http://127.0.0.1:8765
+mbedly-api --port 9000 --host 0.0.0.0   # expose to LAN devices
+curl http://127.0.0.1:8765/health
+curl -X POST http://127.0.0.1:8765/scrape -H 'Content-Type: application/json' -d '{"url":"https://..."}'
+curl -X POST http://127.0.0.1:8765/download -H 'Content-Type: application/json' -d '{"urls":["https://..."],"quality":"720p"}'
+```
+
+**Flutter app** (reuses the engine through the API):
+
+```sh
+cd flutter/mbedly_app
+flutter pub get && flutter run -d chrome     # any device/web target
+```
+
 ## Roadmap
 
 - [x] Scrape any page for embedded video links & download them
 - [x] YouTube (watch / embed / shorts / live) with metadata
+- [x] Playlist & serialized episode downloads
 - [x] Mahara-Tech course extraction (cookie support)
 - [x] Facebook, LiviVideo, native `.mp4`, HLS `.m3u8`
 - [x] Cross-platform full-screen dashboard (Textual) with progress bars & download history
-- [ ] Flutter desktop / mobile app (planned — reuses `mbedly.engine`)
-- [ ] Udemy, Coursera, Alison password-gated course extraction
-- [x] Playlist & serialized episode downloads
+- [x] JSON API (`mbedly-api`) + Flutter app (`flutter/mbedly_app`) wired to it
+- [x] CI — `pytest` + `flutter analyze` + `flutter test` + `flutter build web` on GitHub Actions
 - [ ] Queue management + parallel downloads
+- [ ] Udemy, Coursera, Alison password-gated course extraction
+- [ ] Flutter: queue screen, resume/cancel, settings
 
 ## Development
 
