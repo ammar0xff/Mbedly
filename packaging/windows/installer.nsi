@@ -6,6 +6,9 @@ Name "Mbedly"
 !ifndef VERSION
   !define VERSION "2.0.0"
 !endif
+!ifndef RELDIR
+  !define RELDIR "Release"
+!endif
 OutFile "${OUTFILE}"
 InstallDir "$PROGRAMFILES64\Mbedly"
 RequestExecutionLevel admin
@@ -20,7 +23,7 @@ UninstPage instfiles
 
 Section "Install"
   SetOutPath "$INSTDIR"
-  File /r "Release\*"
+  File /r "${RELDIR}\*"
   WriteUninstaller "$INSTDIR\uninstall.exe"
   CreateDirectory "$SMPROGRAMS\Mbedly"
   CreateShortcut "$SMPROGRAMS\Mbedly\Mbedly.lnk" "$INSTDIR\mbedly_app.exe"

@@ -145,6 +145,8 @@ jobs:
           mkdir -p "$APPDIR/usr/share/applications" "$APPDIR/usr/share/icons/hicolor/256x256/apps"
           cp "$GITHUB_WORKSPACE/packaging/linux/mbedly_app.desktop" "$APPDIR/usr/share/applications/"
           cp icon.png "$APPDIR/usr/share/icons/hicolor/256x256/apps/mbedly_app.png"
+          cp "$GITHUB_WORKSPACE/packaging/linux/mbedly_app.desktop" "$APPDIR/mbedly_app.desktop"
+          cp icon.png "$APPDIR/mbedly_app.png"
           curl -fsSL --retry 3 --retry-all-errors -o appimagetool.AppImage \
             https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
           chmod +x appimagetool.AppImage
@@ -179,8 +181,7 @@ jobs:
       - name: Build NSIS installer (single exe)
         run: |
           choco install nsis -y --no-progress
-          cd build\windows\x64\runner
-          & "${env:ProgramFiles(x86)}\NSIS\makensis.exe" "/DOUTFILE=$env:GITHUB_WORKSPACE\mbedly-app-windows-setup.exe" "/DVERSION=$env:NSIS_VERSION" "$env:GITHUB_WORKSPACE\packaging\windows\installer.nsi"
+          & "${env:ProgramFiles(x86)}\NSIS\makensis.exe" "/DOUTFILE=$env:GITHUB_WORKSPACE\mbedly-app-windows-setup.exe" "/DVERSION=$env:NSIS_VERSION" "/DRELDIR=$env:GITHUB_WORKSPACE\flutter\mbedly_app\build\windows\x64\runner\Release" "$env:GITHUB_WORKSPACE\packaging\windows\installer.nsi"
         env:
           NSIS_VERSION: ${{ needs.resolve.outputs.nom }}
       - uses: actions/upload-artifact@v5
