@@ -1,0 +1,289 @@
+name: release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Tag to publish (e.g. v2.0.0). Default: latest tag'
+        required: false
+        default: dev
+
+permissions:
+  contents: write
+
+env:
+  VERSION_INPUT: ${{ github.event.inputs.version }}
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.ver.outputs.tag }}
+      nom: ${{ steps.ver.outputs.nom }}
+      publishable: ${{ steps.ver.outputs.publishable }}
+    steps:
+      - id: ver
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            v="${{ github.ref_name }}"
+          else
+            v="$VERSION_INPUT"
+          fi
+          if [ -z "$v" ] || [ "$v" = "dev" ]; then
+            v="$(git ls-remote --tags --sort=-v:refname origin 'refs/tags/v[0-9]*' | head -1 | awk '{print $2}' | sed 's#refs/tags/##')"
+          fi
+          echo "tag=${v}" >> "$GITHUB_OUTPUT"
+          case "$v" in
+            v*) echo "nom=${v#v}" >> "$GITHUB_OUTPUT"; echo "publishable=yes" >> "$GITHUB_OUTPUT" ;;
+            *)  echo "nom=${v}"  >> "$GITHUB_OUTPUT"; echo "publishable=no"  >> "$GITHUB_OUTPUT" ;;
+          esac
+          echo "resolved tag=${v}"
+
+  # ---------------------------------------------------------------- Flutter app
+
+  flutter-android:
+    needs: resolve
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.resolve.outputs.nom }}
+    defaults:
+      run:
+        working-directory: flutter/mbedly_app
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Scaffold android platform
+        shell: bash
+        run: |
+          rm -rf "$RUNNER_TEMP/mbedly_scaffold"
+          flutter create --no-pub --project-name mbedly_app --org com.ammar0xff --platforms=android "$RUNNER_TEMP/mbedly_scaffold"
+          cp -r "$RUNNER_TEMP/mbedly_scaffold/android" .
+      - name: pub get
+        run: flutter pub get
+      - name: Accept Android licenses
+        run: |
+          yes | flutter doctor --android-licenses > /dev/null || true
+      - name: Build APK
+        run: flutter build apk --release --build-name "$VERSION" --build-number "$GITHUB_RUN_NUMBER"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-mbedly-app-android
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+  flutter-web:
+    needs: resolve
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: flutter/mbedly_app
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: pub get
+        run: flutter pub get
+      - name: Build web
+        run: flutter build web
+      - name: Package
+        run: tar -czf "$GITHUB_WORKSPACE/mbedly-app-web.tar.gz" -C build/web .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-mbedly-app-web
+          path: mbedly-app-web.tar.gz
+
+  flutter-linux:
+    needs: resolve
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: flutter/mbedly_app
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Install GTK toolchain
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ninja-build libgtk-3-dev clang cmake pkg-config liblzma-dev libstdc++-12-dev
+      - name: Scaffold linux platform
+        shell: bash
+        run: |
+          rm -rf "$RUNNER_TEMP/mbedly_scaffold"
+          flutter create --no-pub --project-name mbedly_app --org com.ammar0xff --platforms=linux "$RUNNER_TEMP/mbedly_scaffold"
+          cp -r "$RUNNER_TEMP/mbedly_scaffold/linux" .
+      - name: pub get
+        run: flutter pub get
+      - name: Build linux
+        run: flutter build linux --release
+      - name: Package
+        run: tar -cJf "$GITHUB_WORKSPACE/mbedly-app-linux.tar.xz" -C build/linux/x64/release bundle
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-mbedly-app-linux
+          path: mbedly-app-linux.tar.xz
+
+  flutter-windows:
+    needs: resolve
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: flutter/mbedly_app
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Scaffold windows platform
+        run: |
+          flutter create --no-pub --project-name mbedly_app --org com.ammar0xff --platforms=windows "$env:RUNNER_TEMP\mbedly_scaffold"
+          Copy-Item -Recurse -Force "$env:RUNNER_TEMP\mbedly_scaffold\windows" .
+      - name: pub get
+        run: flutter pub get
+      - name: Build windows
+        run: flutter build windows --release
+      - name: Package
+        run: Compress-Archive -Path "build\windows\x64\runner\Release\*" -DestinationPath "$env:GITHUB_WORKSPACE\mbedly-app-windows.zip" -Force
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-mbedly-app-windows
+          path: mbedly-app-windows.zip
+
+  flutter-macos:
+    needs: resolve
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: flutter/mbedly_app
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Scaffold macos platform
+        shell: bash
+        run: |
+          rm -rf "$RUNNER_TEMP/mbedly_scaffold"
+          flutter create --no-pub --project-name mbedly_app --org com.ammar0xff --platforms=macos "$RUNNER_TEMP/mbedly_scaffold"
+          cp -r "$RUNNER_TEMP/mbedly_scaffold/macos" .
+      - name: pub get
+        run: flutter pub get
+      - name: Build macos
+        run: flutter build macos --release
+      - name: Package
+        run: tar -czf "$GITHUB_WORKSPACE/mbedly-app-macos.tar.gz" -C build/macos/Build/Products/Release mbedly_app.app
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-mbedly-app-macos
+          path: mbedly-app-macos.tar.gz
+
+  # ------------------------------------------------------------ CLI / TUI binaries
+
+  cli-linux:
+    needs: resolve
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install + PyInstaller
+        run: |
+          pip install -q -e . pyinstaller
+      - name: Build onefile binary
+        run: |
+          python -m PyInstaller --onefile --clean --name mbedly --distpath dist src/mbedly/__main__.py
+          mv dist/mbedly "$GITHUB_WORKSPACE/mbedly-cli-linux"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-mbedly-cli-linux
+          path: mbedly-cli-linux
+
+  cli-macos:
+    needs: resolve
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install + PyInstaller
+        run: |
+          pip install -q -e . pyinstaller
+      - name: Build onefile binary
+        run: |
+          python -m PyInstaller --onefile --clean --name mbedly --distpath dist src/mbedly/__main__.py
+          mv dist/mbedly "$GITHUB_WORKSPACE/mbedly-cli-macos"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-mbedly-cli-macos
+          path: mbedly-cli-macos
+
+  cli-windows:
+    needs: resolve
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install + PyInstaller
+        run: |
+          pip install -q -e . pyinstaller
+      - name: Build onefile binary
+        run: |
+          python -m PyInstaller --onefile --clean --name mbedly --distpath dist src/mbedly/__main__.py
+          Move-Item -Force dist\mbedly.exe "$env:GITHUB_WORKSPACE\mbedly-cli-windows.exe"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-mbedly-cli-windows
+          path: mbedly-cli-windows.exe
+
+  # -------------------------------------------------------------- publish to release
+
+  publish:
+    needs:
+      - resolve
+      - flutter-android
+      - flutter-web
+      - flutter-linux
+      - flutter-windows
+      - flutter-macos
+      - cli-linux
+      - cli-macos
+      - cli-windows
+    runs-on: ubuntu-latest
+    if: needs.resolve.outputs.publishable == 'yes'
+    env:
+      VERSION: ${{ needs.resolve.outputs.tag }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: release-*
+          path: assets
+          merge-multiple: true
+      - name: Upload to release
+        shell: bash
+        run: |
+          ls -lh assets
+          if gh release view "$VERSION" >/dev/null 2>&1; then
+            gh release upload "$VERSION" assets/* --clobber
+          else
+            gh release create "$VERSION" assets/* --title "Mbedly $VERSION" --generate-notes
+          fi
