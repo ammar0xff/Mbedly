@@ -1,5 +1,6 @@
 /// Data models for the Mbedly API - mirror of `mbedly.engine.MediaItem` and
 /// the `/jobs` / `/history` payloads.
+library;
 
 class MediaItem {
   final String url;

@@ -21,13 +21,13 @@ class FakeApiClient extends ApiClient {
   Future<List<MediaItem>> scrape(String url) async {
     if (url.contains('404')) throw ApiException('boom');
     return [
-      MediaItem(
+      const MediaItem(
         url: 'https://youtu.be/abc',
         kind: 'youtube',
         title: 'Lesson One',
         channel: 'My Channel',
       ),
-      MediaItem(
+      const MediaItem(
         url: 'https://youtu.be/def',
         kind: 'youtube',
         title: 'Lesson Two',

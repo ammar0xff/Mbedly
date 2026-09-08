@@ -1,4 +1,5 @@
 /// Small formatting helpers - the Dart mirror of the dashboard's format helpers.
+library;
 
 String formatBytes(num bytes) {
   if (bytes <= 0) return '0 B';

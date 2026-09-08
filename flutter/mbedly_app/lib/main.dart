@@ -4,7 +4,6 @@ import 'src/api_client.dart';
 import 'src/downloads_screen.dart';
 import 'src/history_screen.dart';
 import 'src/home_screen.dart';
-import 'src/models.dart';
 
 void main() {
   runApp(MbedlyApp(api: ApiClient()));
@@ -52,10 +51,9 @@ class _RootState extends State<Root> {
     try {
       await widget.api.download(urls, quality: quality);
     } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('$e')));
-      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('$e')));
     }
     setState(() => _index = 1);
   }
