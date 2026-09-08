@@ -79,7 +79,7 @@ mbedly -h                                                    # help
 - [x] Cross-platform full-screen dashboard (Textual) with progress bars & download history
 - [ ] Flutter desktop / mobile app (planned — reuses `mbedly.engine`)
 - [ ] Udemy, Coursera, Alison password-gated course extraction
-- [ ] Playlist & serialized episode downloads
+- [x] Playlist & serialized episode downloads
 - [ ] Queue management + parallel downloads
 
 ## Development

@@ -81,3 +81,93 @@ class TestMaharatech:
     def test_course_detection(self):
         assert engine.is_maharatech_course("https://maharatech.gov.eg/course/view.php?id=1")
         assert not engine.is_maharatech_course("https://maharatech.gov.eg/other")
+
+
+class TestPlaylist:
+    def test_detection(self):
+        assert engine.is_youtube_playlist("https://www.youtube.com/playlist?list=PLabc123")
+        assert not engine.is_youtube_playlist("https://www.youtube.com/watch?v=aaaaaaaaaaa")
+        assert not engine.is_youtube_playlist("https://example.com/playlist?list=x")
+
+    def test_expand(self, monkeypatch):
+        class FakeEntry:
+            def __init__(self, vid, title, channel=None):
+                self.data = {
+                    "id": vid,
+                    "title": title,
+                    "channel": channel or "",
+                    "uploader": channel or "",
+                }
+            def get(self, key, default=None):
+                return self.data.get(key, default)
+
+        fake_entries = [
+            FakeEntry("aaaaaaaaaaa", "lesson one", "mychannel"),
+            FakeEntry("bbbbbbbbbbb", "lesson two", "mychannel"),
+            FakeEntry("ccccccccccc", "", ""),
+        ]
+        fake_info = {
+            "entries": fake_entries,
+            "channel": "mychannel",
+            "uploader": "mychannel",
+        }
+
+        class FakeYDL:
+            def __init__(self, *a, **k):
+                self.calls = (a, k)
+            def __enter__(self):
+                return self
+            def __exit__(self, *a):
+                return False
+            def extract_info(self, url, download):
+                assert download is False
+                return fake_info
+
+        monkeypatch.setattr(engine.yt_dlp, "YoutubeDL", FakeYDL)
+        items = engine.expand_playlist("https://www.youtube.com/playlist?list=PLabc123")
+        assert len(items) == 3
+        assert items[0].title == "lesson one"
+        assert items[0].channel == "mychannel"
+        assert items[0].url == "https://www.youtube.com/watch?v=aaaaaaaaaaa"
+        assert items[0].kind == "youtube"
+        # entry without its own channel/uploader falls back to the playlist channel
+        assert items[2].channel == "mychannel"
+
+    def test_scrape_expands_playlist(self, monkeypatch):
+        seen = []
+
+        class FakeYDL:
+            def __init__(self, *a, **k):
+                pass
+            def __enter__(self):
+                return self
+            def __exit__(self, *a):
+                return False
+            def extract_info(self, url, download):
+                seen.append(url)
+                return {"entries": [
+                    {"id": "aaaaaaaaaaa", "title": "ep 1", "channel": "c"},
+                    {"id": "bbbbbbbbbbb", "title": "ep 2", "channel": "c"},
+                ]}
+
+        monkeypatch.setattr(engine.yt_dlp, "YoutubeDL", FakeYDL)
+        items = engine.scrape("https://www.youtube.com/playlist?list=PLabc123")
+        assert len(items) == 2
+        assert all(i.kind == "youtube" for i in items)
+        assert items[1].title == "ep 2"
+        assert "PLabc123" in seen[0]
+
+    def test_scrape_playlist_fallback_on_error(self, monkeypatch):
+        class BoomYDL:
+            def __init__(self, *a, **k):
+                pass
+            def __enter__(self):
+                raise Exception("network down")
+            def __exit__(self, *a):
+                return False
+
+        monkeypatch.setattr(engine.yt_dlp, "YoutubeDL", BoomYDL)
+        # falls back to a single item (not a crash)
+        items = engine.scrape("https://www.youtube.com/playlist?list=PLabc123")
+        assert len(items) == 1
+        assert items[0].kind == "youtube"

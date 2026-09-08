@@ -193,12 +193,64 @@ def is_maharatech_course(url: str) -> bool:
     return "maharatech" in url and "course" in url
 
 
+def is_youtube_playlist(url: str) -> bool:
+    """True for a YouTube/channel playlist URL (not a single video)."""
+    return "youtube.com/playlist" in url and "list=" in url
+
+
+def expand_playlist(url: str, limit: int = 500) -> list[MediaItem]:
+    """Resolve a YouTube playlist URL into one MediaItem per video.
+
+    Uses yt-dlp's flat extraction (fast - fetches only id/title metadata),
+    and falls back to an empty list if the playlist cannot be resolved.
+    """
+    items: list[MediaItem] = []
+    opts = {
+        "quiet": True,
+        "no_warnings": True,
+        "skip_download": True,
+        "extract_flat": "in_playlist",
+        "playlistend": limit,
+    }
+    try:
+        with yt_dlp.YoutubeDL(opts) as ydl:
+            info = ydl.extract_info(url, download=False)
+        entries = info.get("entries") or []
+        fallback_channel = info.get("channel") or info.get("uploader") or ""
+        for entry in entries:
+            vid = (entry or {}).get("id")
+            if not vid:
+                continue
+            items.append(
+                MediaItem(
+                    url=f"https://www.youtube.com/watch?v={vid}",
+                    kind="youtube",
+                    title=(entry.get("title") or "")[:200],
+                    channel=(entry.get("channel")
+                             or entry.get("uploader")
+                             or fallback_channel or ""),
+                )
+            )
+    except Exception:
+        return []
+    return items
+
+
 def scrape(url: str, cookie: Optional[str] = None) -> list[MediaItem]:
     """Full extraction pipeline: URL -> list of supported media items."""
     if is_maharatech_course(url):
         items = maharatech_scrape(url, cookie)
         if items:
             return items
+
+    # YouTube playlist? expand it into its individual videos.
+    if is_youtube_playlist(url):
+        try:
+            items = expand_playlist(url)
+            if items:
+                return items
+        except Exception:
+            pass
 
     # Direct media/video link?
     if classify(url) in RECOGNIZED_KINDS:
