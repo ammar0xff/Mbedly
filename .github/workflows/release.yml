@@ -131,12 +131,30 @@ jobs:
         run: flutter pub get
       - name: Build linux
         run: flutter build linux --release
-      - name: Package
-        run: tar -cJf "$GITHUB_WORKSPACE/mbedly-app-linux.tar.xz" -C build/linux/x64/release bundle
+      - name: Package AppImage (single executable)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 "$GITHUB_WORKSPACE/packaging/linux/make_icon.py"
+          BUNDLE=build/linux/x64/release/bundle
+          APPDIR=build/linux/x64/release/AppDir
+          mkdir -p "$APPDIR/usr/bin"
+          cp "$BUNDLE/mbedly_app" "$APPDIR/usr/bin/"
+          cp -r "$BUNDLE/lib" "$APPDIR/usr/bin/"
+          cp -r "$BUNDLE/data" "$APPDIR/usr/bin/"
+          mkdir -p "$APPDIR/usr/share/applications" "$APPDIR/usr/share/icons/hicolor/256x256/apps"
+          cp "$GITHUB_WORKSPACE/packaging/linux/mbedly_app.desktop" "$APPDIR/usr/share/applications/"
+          cp icon.png "$APPDIR/usr/share/icons/hicolor/256x256/apps/mbedly_app.png"
+          export APPIMAGE_EXTRACT_AND_RUN=1
+          wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          wget -q https://github.com/linuxdeploy/linuxdeploy-plugin-gtk/releases/download/continuous/linuxdeploy-plugin-gtk-x86_64.AppImage
+          chmod +x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-gtk-x86_64.AppImage
+          ./linuxdeploy-x86_64.AppImage --appdir "$APPDIR" --plugin gtk --output appimage
+          mv -f Mbedly-*.AppImage "$GITHUB_WORKSPACE/mbedly-app-linux.AppImage"
       - uses: actions/upload-artifact@v5
         with:
           name: release-mbedly-app-linux
-          path: mbedly-app-linux.tar.xz
+          path: mbedly-app-linux.AppImage
 
   flutter-windows:
     needs: resolve
@@ -158,12 +176,17 @@ jobs:
         run: flutter pub get
       - name: Build windows
         run: flutter build windows --release
-      - name: Package
-        run: Compress-Archive -Path "build\windows\x64\runner\Release\*" -DestinationPath "$env:GITHUB_WORKSPACE\mbedly-app-windows.zip" -Force
+      - name: Build NSIS installer (single exe)
+        run: |
+          choco install nsis -y --no-progress
+          cd build\windows\x64\runner
+          & "${env:ProgramFiles(x86)}\NSIS\makensis.exe" "/DOUTFILE=$env:GITHUB_WORKSPACE\mbedly-app-windows-setup.exe" "/DVERSION=$env:NSIS_VERSION" "$env:GITHUB_WORKSPACE\packaging\windows\installer.nsi"
+        env:
+          NSIS_VERSION: ${{ needs.resolve.outputs.nom }}
       - uses: actions/upload-artifact@v5
         with:
           name: release-mbedly-app-windows
-          path: mbedly-app-windows.zip
+          path: mbedly-app-windows-setup.exe
 
   flutter-macos:
     needs: resolve
@@ -187,12 +210,14 @@ jobs:
         run: flutter pub get
       - name: Build macos
         run: flutter build macos --release
-      - name: Package
-        run: tar -czf "$GITHUB_WORKSPACE/mbedly-app-macos.tar.gz" -C build/macos/Build/Products/Release mbedly_app.app
+      - name: Package DMG (single file)
+        shell: bash
+        run: |
+          hdiutil create -volname Mbedly -srcfolder build/macos/Build/Products/Release/mbedly_app.app -ov -format UDZO "$GITHUB_WORKSPACE/mbedly-app-macos.dmg" > /dev/null
       - uses: actions/upload-artifact@v5
         with:
           name: release-mbedly-app-macos
-          path: mbedly-app-macos.tar.gz
+          path: mbedly-app-macos.dmg
 
   # ------------------------------------------------------------ CLI / TUI binaries
 

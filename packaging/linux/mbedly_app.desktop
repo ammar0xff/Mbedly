@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Mbedly
+Comment=Download videos from nearly anything
+Exec=mbedly_app
+Icon=mbedly_app
+Terminal=false
+Categories=AudioVideo;Player;Network;
+StartupNotify=true
