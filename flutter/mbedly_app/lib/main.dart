@@ -6,7 +6,19 @@ import 'src/history_screen.dart';
 import 'src/home_screen.dart';
 
 void main() {
-  runApp(MbedlyApp(api: ApiClient()));
+  const override = String.fromEnvironment('API_BASE_URL');
+  runApp(MbedlyApp(api: ApiClient(baseUrl: override.isNotEmpty ? override : defaultApiBase)));
+}
+
+/// Where the app looks for the local `mbedly-api` server.
+///
+/// Override at build time for real devices / remote hosts:
+///   flutter build apk --dart-define=API_BASE_URL=http://192.168.1.20:8765
+String get defaultApiBase {
+  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+    return 'http://10.0.2.2:8765'; // Android emulator -> host machine
+  }
+  return 'http://127.0.0.1:8765'; // web / desktop: same machine as the API
 }
 
 class MbedlyApp extends StatelessWidget {

@@ -18,7 +18,14 @@ yt-dlp already run.
    flutter pub get
    flutter run -d chrome    # or any device
    ```
-   Default API base is `http://127.0.0.1:8765`.
+   Default API base is `http://127.0.0.1:8765` (web/desktop) and
+   `http://10.0.2.2:8765` on the Android **emulator** (that alias reaches the
+   host machine).
+
+   On a real Android device, point it at the backend's LAN IP at build time:
+   ```bash
+   flutter build apk --dart-define=API_BASE_URL=http://192.168.1.20:8765
+   ```
 
 ## What's inside
 
