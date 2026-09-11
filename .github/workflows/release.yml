@@ -68,8 +68,7 @@ jobs:
           rm -rf "$RUNNER_TEMP/mbedly_scaffold"
           flutter create --no-pub --project-name mbedly_app --org com.ammar0xff --platforms=android "$RUNNER_TEMP/mbedly_scaffold"
           cp -r "$RUNNER_TEMP/mbedly_scaffold/android" .
-          cp -f "$GITHUB_WORKSPACE/flutter/mbedly_app/android/app/src/main/AndroidManifest.xml" \
-                android/app/src/main/AndroidManifest.xml
+          git checkout -- android/app/src/main/AndroidManifest.xml
       - name: pub get
         run: flutter pub get
       - name: Accept Android licenses
